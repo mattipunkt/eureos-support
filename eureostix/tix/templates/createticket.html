@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Ticket eröffnen{% endblock %}
 {% block body %}
 <h1>Ticket erstellen</h1>
 <p>Hier können Sie ihr Ticket erstellen, um Hilfe vom IT-Support zu bekommen. Dazu bitte das folgende Formular ausfüllen.</p>
 
 <h2>Formular</h2>
-<div>
+<form id="addNewTicket">
     <!--    FORM    -->
     <div class="form-floating mb-3">
         <input type="email" class="form-control" id="mailAdress" placeholder="nutzername@eureos.de">
@@ -31,8 +32,9 @@
     <div class="mb-3">
         <label for="uploadFile" class="form-label">Anhänge hinzufügen</label>
         <input class="form-control" type="file" id="uploadFile" multiple>
-      </div>
-      <button type="button" class="btn btn-warning">Abschicken</button>
+    </div>
+    <button type="submit" class="btn btn-warning">Abschicken</button>
     
-</div>
+</form>
+<script src="{% static 'sendtodjango.js' %}"></script>
 {% endblock body %}

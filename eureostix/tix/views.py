@@ -7,3 +7,10 @@ def index(request):
 
 def createTicket(request):
     return render(request, "createticket.html")
+
+
+def getData(request):
+    if request.method == 'GET':
+        return HttpResponse('Error!')
+    elif request.method == 'POST':
+        email = request.POST.get('')
