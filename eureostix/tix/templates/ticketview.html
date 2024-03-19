@@ -1,9 +1,89 @@
 {% extends "base.html" %}
+{% load bootstrap5 %}
 {% block title %}Start{% endblock title %}
 {% block body %}
     <div class="container">
         <div class="alert alert-light" role="alert">
-            <h1>Ticket ansehen mit der ID {{ id }}</h1>
+            <h1>Ticket mit der ID {{ id }}{% if ticket.open == 0 %}  <span class="badge text-bg-info">Geschlossen</span>{% endif %}</h1>
+            <b>Erstellt von: </b>{{ ticket.name }} ({{ ticket.email }}) <br>
+            <b>Erstellt am: </b>{{ ticket.created_on }}<br>
+            <b>Kategorie: </b>{{ ticket.problemtype }}<br><br>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h2>{{ ticket.title }}</h2>
+                    <p>
+                        {{ ticket.problemdescription}}
+                    </p>
+                </div>
+            </div>
+            <br>
+            <!-- TBC FOR-LOOP for messages -->
+            {% for message in messages %}
+            <div class="card">
+                <div class="card-body">
+                    <p class="text-body-tertiary">
+                        <b>Hinzugefügt am {{ message.created_on }} von {{ message.added_by }}</b><br>
+                    </p>
+                    <p>
+                        {{ message.content}}
+                    </p>
+                </div>
+            </div>
+            <br>
+
+            {% endfor %}
+
+            <!-- Add Message -->
+            <p class="d-inline-flex gap-1">
+                {% if ticket.open == 1 %}
+                <a class="btn btn-primary" data-bs-toggle="collapse" href="#addNewMessage" role="button" aria-expanded="false" aria-controls="addNewMessage">
+                  Nachricht hinzufügen
+                </a>
+                <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Ticket schließen</a>
+                {% else %}
+                <a class="btn btn-primary disabled" role="button" aria-disabled="true">
+                    Nachricht hinzufügen
+                </a>
+                    <a class="btn btn-danger disabled" role="button" aria-disabled="true">Ticket schließen</a>
+
+                  Dieses Ticket ist geschlossen und kann nicht weiter bearbeitet werden.
+                {% endif %}
+
+            </p>
+
+            
+              <div class="collapse" id="addNewMessage">
+                <div class="card card-body">
+                    <form action="/ticket/{{ id }}" method="post">
+                        {% csrf_token %}
+                        {% bootstrap_form addMessageForm %}
+                        <input type="submit" value="Absenden" class="btn btn-warning" >
+                    </form>
+                </div>
+              </div>
+
+              <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Soll dieses Ticket wirklich geschlossen werden?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    Wenn dieses Ticket geschlossen wird, kann es (vorerst) nicht wieder aktiviert werden und es muss im Notfall ein neues Ticket eröffnet werden. Wollen Sie wirklich fortfahren?
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zurück</button>
+                    <a href="/ticket/{{ id }}/close" type="button" class="btn btn-danger" >Ja, verstanden. Bitte schließen!</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <script>
+
+            </script>
         </div>
     </div>
 {% endblock body %}
