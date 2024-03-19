@@ -15,9 +15,10 @@ def createTicket(request):
         mail_adress = request.POST.get('mail_adress')
         problem = request.POST.get('problem')
         description = request.POST.get('description')
+        title = request.POST.get('title')
         if form.is_valid():
             print("POST-Erhalten:\nMail: " + mail_adress + "\nProblem: " + problem + "\nBeschreibung: " + description)
-            ticket = Ticket.objects.create(email=mail_adress, problemtype=problem, problemdescription=description)
+            ticket = Ticket.objects.create(email=mail_adress, problemtype=problem, problemdescription=description, title=title)
             return render(request, "success.html")
             
     else:
@@ -26,5 +27,10 @@ def createTicket(request):
     return render(request, "createticket.html", {"form": form})
 
 
+def ticketRedirecter(request):
+    return render(request, "ticketredirect.html")
+
+
 def viewTicket(request, id):
-    return render(request, "ticketview.html")
+    ticket = Ticket.objects.filter(id=id).values()
+    return render(request, "ticketview.html", {"id": id})

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Start{% endblock title %}
+{% block body %}
+<div class="alert alert-light" role="alert">
+    <h1>Ticket aufrufen</h1>
+    <h3>Bitte geben Sie die ID des Tickets ein, um den aktuellen Stand aufzurufen:</h3><br>
+    <div class="row row-cols-lg-auto g-3 align-items-center">
+        <div class="form-floating mb-3 col">
+            <input type="int" class="form-control" id="ticketId" placeholder="bspw. 011212">
+            <label for="ticketId">Ticket-ID bitte eingeben</label>
+        </div>
+        <div class="col">
+            <input type="button" value="Weiter" class="btn btn-warning" onclick="weiterleiten()">
+        </div>
+    </div>
+      
+</div>
+<script>
+    function weiterleiten() {
+        const eingabeZahl = document.getElementById("ticketId").value;
+        const weiterleitungsURL = "/ticket/" + eingabeZahl;
+        window.location.href = weiterleitungsURL;
+    }
+</script>
+
+
+
+{% endblock %}
