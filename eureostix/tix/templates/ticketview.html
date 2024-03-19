@@ -4,7 +4,7 @@
 {% block body %}
     <div class="container">
         <div class="alert alert-light" role="alert">
-            <h1>Ticket mit der ID {{ id }}{% if ticket.open == 0 %}  <span class="badge text-bg-info">Geschlossen</span>{% endif %}</h1>
+            <h1>Ticket mit der Nummer {{ id }}{% if ticket.open == 0 %}  <span class="badge text-bg-info">Geschlossen</span>{% endif %}</h1>
             <b>Erstellt von: </b>{{ ticket.name }} ({{ ticket.email }}) <br>
             <b>Erstellt am: </b>{{ ticket.created_on }}<br>
             <b>Kategorie: </b>{{ ticket.problemtype }}<br><br>
@@ -38,14 +38,14 @@
             <p class="d-inline-flex gap-1">
                 {% if ticket.open == 1 %}
                 <a class="btn btn-primary" data-bs-toggle="collapse" href="#addNewMessage" role="button" aria-expanded="false" aria-controls="addNewMessage">
-                  Nachricht hinzufügen
+                    <i class="bi bi-plus-circle"></i> Nachricht hinzufügen  
                 </a>
-                <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Ticket schließen</a>
+                <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bi bi-door-closed"></i>Ticket schließen</a>
                 {% else %}
                 <a class="btn btn-primary disabled" role="button" aria-disabled="true">
-                    Nachricht hinzufügen
+                    <i class="bi bi-plus-circle"></i> Nachricht hinzufügen 
                 </a>
-                    <a class="btn btn-danger disabled" role="button" aria-disabled="true">Ticket schließen</a>
+                    <a class="btn btn-danger disabled" role="button" aria-disabled="true"><i class="bi bi-door-closed"></i>Ticket schließen</a>
 
                   Dieses Ticket ist geschlossen und kann nicht weiter bearbeitet werden.
                 {% endif %}
@@ -55,7 +55,7 @@
             
               <div class="collapse" id="addNewMessage">
                 <div class="card card-body">
-                    <form action="/ticket/{{ id }}" method="post">
+                    <form action="/ticket/{{ id }}/" method="post">
                         {% csrf_token %}
                         {% bootstrap_form addMessageForm %}
                         <input type="submit" value="Absenden" class="btn btn-warning" >

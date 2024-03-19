@@ -25,7 +25,7 @@ def sendmail(receiver, message, subject):
         conn.set_debuglevel(False)
         conn.login(SMTP_USER, SMTP_PASSWORD)
         try:
-           conn.sendmail(SMTP_USER, receiver, msg.as_string())
+            conn.sendmail(SMTP_USER, receiver, msg.as_string())
         finally:
             conn.quit()
     except:
