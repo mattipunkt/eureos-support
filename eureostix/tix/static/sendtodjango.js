@@ -1,7 +1,7 @@
 document.getElementById('addNewTicket').addEventListener('submit', function(event) {
     event.preventDefault();
     var ticketData = new FormData(this);
-    var token = '{{ csrf_token }}';
+    var token = '{% csrf_token %}';
 
     fetch('/pushData/', {method: 'POST', headers: {'X-CSRFToken': token}, body: ticketData, })
     .then(response => {

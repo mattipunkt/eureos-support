@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load bootstrap5 %}
 {% load static %}
 {% block title %}Ticket eröffnen{% endblock %}
 {% block body %}
@@ -6,35 +7,11 @@
 <p>Hier können Sie ihr Ticket erstellen, um Hilfe vom IT-Support zu bekommen. Dazu bitte das folgende Formular ausfüllen.</p>
 
 <h2>Formular</h2>
-<form id="addNewTicket">
-    <!--    FORM    -->
-    <div class="form-floating mb-3">
-        <input type="email" class="form-control" id="mailAdress" placeholder="nutzername@eureos.de">
-        <label for="mailAdress">eureos Mail-Adresse</label>
-    </div>
-
-    <div class="form-floating">
-        <select class="form-select" id="problematik" aria-label="Bereich auswählen">
-            <option value="1">Windows-Problem</option>
-            <option value="2">Handy</option>
-            <option value="3">DATEV</option>
-            <option value="4">Remote-Arbeiten / VPN</option>
-            <option value="5">Microsoft-Office</option>
-          </select>
-          <label for="problematik">Wählen Sie ihr Problem aus.</label>
-    </div><br>
-    
-    <div class="form-floating">
-        <textarea class="form-control" placeholder="Problematik" id="problemText" style="height: 150px"></textarea>
-        <label for="problemText">Beschreiben Sie ihr Problem möglichst genau.</label>
-    </div>
-    <br>
-    <div class="mb-3">
-        <label for="uploadFile" class="form-label">Anhänge hinzufügen</label>
-        <input class="form-control" type="file" id="uploadFile" multiple>
-    </div>
-    <button type="submit" class="btn btn-warning">Abschicken</button>
-    
+<form action="/createTicket/" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <input type="submit" value="Absenden" class="btn btn-warning">
 </form>
-<script src="{% static 'sendtodjango.js' %}"></script>
+
+<!-- <script src="{% static 'sendtodjango.js' %}"></script> -->
 {% endblock body %}
