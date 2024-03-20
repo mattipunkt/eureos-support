@@ -6,6 +6,7 @@ urlpatterns = [
     path('createTicket/', views.createTicket, name='createTicket'),
     path('viewticket/', views.ticketRedirecter, name="ticketRedirect"),
     path('ticket/<int:id>/', views.viewTicket, name="ticketViewer"),
+    path('ticket/<int:id>/changecategory/', views.changeTicketCategory, name="changeCategory"),
     path('ticket/<int:id>/close/', views.closeTicket, name="closeTicket"),
     path('login/', views.loginPage, name="closeTicket"),
     path('logout/', views.logoutAction, name="logoutAction"),

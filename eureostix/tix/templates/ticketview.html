@@ -7,7 +7,34 @@
             <h1>Ticket mit der Nummer {{ id }}{% if ticket.open == 0 %}  <span class="badge text-bg-info">Geschlossen</span>{% endif %}</h1>
             <b>Erstellt von: </b>{{ ticket.name }} ({{ ticket.email }}) <br>
             <b>Erstellt am: </b>{{ ticket.created_on }}<br>
-            <b>Kategorie: </b>{{ ticket.problemtype }}<br><br>
+            <b>Kategorie: </b>{{ ticket.problemtype }}
+            {% if user.is_authenticated %}
+            <button type="button" class="btn btn-secondary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" data-bs-toggle="modal" data-bs-target="#changeCategory">Ändern</button>
+            <!-- Change Category Modal -->
+                        <div class="modal fade" id="changeCategory" tabindex="-1" aria-labelledby="changeCategoryLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="changeCategoryLabel">Kategorie ändern</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/ticket/{{ id }}/changecategory/" method="post">
+                                        {% csrf_token %}
+                                        {% bootstrap_form changeCategory %}
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zurück</button>
+                                        <button type="submit" class="btn btn-primary">Speichern</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+              
+  
+            {% endif %}
+            <br><br>
             
             <div class="card">
                 <div class="card-body">

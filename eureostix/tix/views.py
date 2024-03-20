@@ -10,7 +10,7 @@ from . import forms
 from .models import Ticket, Message
 
 # Mail-Function to send mails
-from .mailservice import sendmail
+from .mailservice import sendmail, checkmails
 
 # env-stuff
 import os
@@ -95,6 +95,7 @@ def viewTicket(request, id):
             "ticket": ticket,
             "addMessageForm": addMessageForm,
             "messages": messages,
+            "changeCategory": forms.changeCategory,
             })
 
 
@@ -133,6 +134,7 @@ def logoutAction(request):
 
 
 def adminBackend(request):
+    checkmails()
     User = get_user_model()
     users = User.objects.all()
     opentickets = Ticket.objects.filter(open=True)
@@ -177,3 +179,12 @@ def resetPassword(request, id):
         u.set_password = new_password
         u.save()
         return HttpResponse('<script>alert("Erfolgreich! Das Passwort wurde geändert.");window.location.replace("/backend");</script>')
+
+
+def changeTicketCategory(request, id):
+    if request.user.is_authenticated:
+        ticket = Ticket.objects.get(pk=id)
+        new_category = request.POST.get('new_problem')
+        ticket.problemtype = new_category
+        ticket.save()
+        return HttpResponse('<script>alert("Erfolgreich! Die Kategorie wurde geändert.");window.location.replace("/ticket/'+str(id)+'");</script>')
