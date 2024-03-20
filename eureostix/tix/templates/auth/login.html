@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+{% block title %}Login{% endblock title %}
+{% block body %}
+<div class="container">
+    <div class="alert alert-info" role="alert">
+        Der Login wird nur für den IT-Support benötigt. Wenn Sie ein Ticket erstellt haben und den aktuellen Stand des Tickets einsehen wollen, klicken sie in der Menüleiste auf <b>Ticket einsehen</b>.
+      </div>
+    <h3>Login</h3>
+    <form action="/login/" method="post">
+        {% csrf_token %}
+        {% bootstrap_form loginform %}
+        
+        <input type="submit" value="Absenden" class="btn btn-warning">
+    </form>
+
+</div>
+
+
+{% endblock %}

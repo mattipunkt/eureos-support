@@ -13,3 +13,16 @@ class createTicketForm(forms.Form):
 class addMessage(forms.Form):
     message = forms.CharField(label="Bitte geben Sie ihre Nachricht ein", widget=forms.Textarea(), max_length=2000)
 
+
+class loginForm(forms.Form):
+    username = forms.CharField(label="eureos Mail-Adresse zum Anmelden", max_length=150)
+    password = forms.CharField(widget=forms.PasswordInput)
+
+class createUser(forms.Form):
+    first_name = forms.CharField(label="Vornamen eingeben", max_length=60)
+    last_name= forms.CharField(label="Nachnamen eingeben", max_length=60)
+    username = forms.CharField(label="Mail-Adresse zum Anmelden eingeben", max_length=150)
+    password = forms.CharField(widget=forms.PasswordInput)
+
+class passwordReset(forms.Form):
+    new_password = forms.CharField(widget=forms.PasswordInput)

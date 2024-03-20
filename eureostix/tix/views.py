@@ -1,6 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 
+# Django Users
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout, get_user_model
+
 # Django Forms
 from . import forms
 from .models import Ticket, Message
@@ -15,6 +19,8 @@ from dotenv import load_dotenv
 load_dotenv() 
 
 HOST_URL = os.getenv('HOST_URL')
+
+
 
 
 # Create your views here.
@@ -64,9 +70,12 @@ def viewTicket(request, id):
         ticket = Ticket.objects.get(pk=id)
         # get Comment on the Ticket to process
         getMessage = request.POST.get('message')
-
+        if request.user.is_authenticated:
+            username = request.user.first_name + ' ' + request.user.last_name
+        else:
+            username = "Max Mustermann"
         
-        message = Message.objects.create(content=getMessage, ticket=ticket)
+        message = Message.objects.create(content=getMessage, ticket=ticket, added_by=username)
         message.save()
         
 
@@ -102,3 +111,69 @@ def closeTicket(request, id):
         return redirect('/ticket/' + str(id))
 
 
+# ACCOUNT STUFF
+def loginPage(request):
+    if request.method == 'POST':
+        user = authenticate(request, username=request.POST.get('username'), password=request.POST.get('password'))
+        if user is not None:
+            login(request, user)
+            return redirect('/')
+        else:
+            return render(request, "auth/misinput.html")
+    else:
+        form = forms.loginForm()
+        return render(request, "auth/login.html", {
+            "loginform": form
+        })
+    
+
+def logoutAction(request):
+    logout(request)
+    return redirect('/')
+
+
+def adminBackend(request):
+    User = get_user_model()
+    users = User.objects.all()
+    opentickets = Ticket.objects.filter(open=True)
+    closedtickets = Ticket.objects.filter(open=False)
+    return render(request, 'adminbackend.html', {
+        "createUserForm": forms.createUser(),
+        "passwordReset": forms.passwordReset(),
+        "users": users,
+        "opentickets": opentickets,
+        "closedtickets": closedtickets,
+    })
+
+
+def createUser(request):
+    username = request.POST.get('username')
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    password = request.POST.get('password')
+    user = User.objects.create_user(username, username, password)
+    user.first_name = first_name
+    user.last_name = last_name
+    user.save()
+    return HttpResponse('<script>alert("Erfolgreich! Nutzer wurde angelegt.");window.location.replace("/backend");</script>')
+
+
+
+def deleteUser(request, id):
+    if request.user.is_authenticated:
+            if not request.user.id == id:
+                u = User.objects.get(pk=id)
+                u.delete()
+                print("Nutzer gelöscht.")
+                return HttpResponse('<script>alert("Erfolgreich! Der Nutzer wurde erfolgreich gelöscht!");window.location.replace("/backend");</script>')
+            else: 
+                print('Nutzer nicht gelöscht. Nutzer hat versucht sich selbst zu löschen!')
+                return HttpResponse('<script>alert("Fehler! Du hast versucht dich selbst zu löschen. Das geht nicht!");window.location.replace("/backend");</script>')
+
+def resetPassword(request, id):
+    if request.user.is_authenticated:
+        new_password = request.POST.get('new_password')
+        u = User.objects.get(pk=id)
+        u.set_password = new_password
+        u.save()
+        return HttpResponse('<script>alert("Erfolgreich! Das Passwort wurde geändert.");window.location.replace("/backend");</script>')

@@ -17,21 +17,35 @@
         <div class="collapse navbar-collapse" id="collapsibleNavId" >
             <ul class="navbar-nav me-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/" aria-current="page" style="color: black"
+                    <a class="nav-link active" href="/" aria-current="page"
                         >Start
                         <span class="visually-hidden">(current)</span></a
                     >
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/createTicket" style="color: black">Ticket erstellen</a>
+                    <a class="nav-link" href="/createTicket">Ticket erstellen</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/viewticket" style="color: black">Ticket einsehen</a>
+                    <a class="nav-link" href="/viewticket">Ticket einsehen</a>
                 </li>
+                {% if not user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/backend">Admin-Bereich</a>
+                </li>
+                {% endif %}
                 
             </ul>
 
             <span class="navbar-text">
+
                 <i class="bi bi-feather"></i> SimpleTix <b>v0.0.1</b> made by Matti
               </span>
         

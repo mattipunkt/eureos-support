@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+{% block body %}
+<!-- FOR NOT LOGGED IN USERS -->
+{% if not user.is_authenticated %}
+<div class="alert alert-danger d-flex align-items-center" role="alert">
+    <div>
+      <h2>Hoppla!</h2>
+      <p>Es scheint, als wärst du nicht angemeldet?! Der Backend-Bereich des Support-Systems ist nur für angemeldete Nutzer verfügbar.</p>
+    </div>
+  </div>
+
+{% else %}
+
+<!-- FOR LOGGED-IN USERS -->
+<h2>Der Ticket-Backendbereich</h2>
+<p>Hallo <b>{{ user.first_name }} {{ user.last_name }}</b>! Hier kannst du Nutzer anlegen, offene Tickets beantworten und Tickets schließen.</p>
+
+    <div class="row">
+        <div class="col col-lg-3">
+            <h4>User-Manager</h4>
+            <p>Du bist angemeldet als <b>{{ user.username }}</b></p>
+            <br>
+            <button class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#createUser">Neuen Nutzer erstellen</button>
+
+            <!-- Create User Modal -->
+            <div class="modal fade" id="createUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Einen neuen Nutzer anlegen</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/createUser/" method="post">
+                            {% csrf_token %}
+                            {% bootstrap_form createUserForm %}
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zurpck</button>
+                                <button type="submit" class="btn btn-primary">Nutzer anlegen</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                </div>
+            </div>
+
+            <!-- USER LIST -->
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+            {% for reguser in users %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#userList-{{ reguser.id }}" aria-expanded="false" aria-controls="userList-{{ reguser.id }}">
+                        {{ reguser.first_name }} {{ reguser.last_name }}
+                    </button>
+                    </h2>
+                    <div id="userList-{{ reguser.id }}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <b>Name: </b>{{ reguser.first_name }} {{ reguser.last_name }}<br>
+                            <b>E-Mail: </b>{{ reguser.username }}<br><br>
+                            {% if reguser.username == "admin" or reguser.email == "admin" %}
+                            <p>Admin-Nutzer kann nicht bearbeitet werden.</p>
+                            {% else %}
+                            <a class="btn btn-primary" data-bs-toggle="collapse" href="#reset-{{ reguser.id }}" role="button" aria-expanded="false" aria-controls="reset-{{ reguser.id }}">
+                                Passwort zurücksetzen
+                              </a>
+                            <br>
+                            <div class="collapse" id="reset-{{ reguser.id }}">
+                                <div class="card card-body">
+                                    <form action="/resetPassword/{{ reguser.id }}/" method="post">
+                                        {% csrf_token %}
+                                        {% bootstrap_form passwordReset %}
+                                        
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Speichern</button>
+                                        </div>
+                                    </form>
+                                </div>
+                              </div>
+                            <br>
+                            <a class="btn btn-danger" data-bs-toggle="collapse" href="#delete-{{ reguser.id }}" role="button" aria-expanded="false" aria-controls="delete-{{ reguser.id }}">
+                                Nutzer löschen
+                              </a>
+                            <div class="collapse" id="delete-{{ reguser.id }}">
+                                <div class="card card-body">
+                                  Soll der Nutzer wirklich zurückgesetzt werden? Das kann nicht rückgängig gemacht werden!
+                                  <a href="/deleteUser/{{ reguser.id }}/" class="btn btn-danger">Ja, Wirklich löschen</a>
+                                </div>
+                                <br>
+                              </div>
+
+                            {% endif %}
+
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+                
+            {% endfor %}
+            </div>
+  
+
+        </div>
+        
+        
+        
+        
+        
+        <div class="col">
+            <h4>Offene Tickets</h4>
+            <div class="list-group">
+                {% for ticket in opentickets %}
+                <a href="/ticket/{{ ticket.id }}" class="list-group-item list-group-item-action"><b>[{{ ticket.problemtype }}]</b> {{ ticket.title }}</a>
+                {% endfor %}
+            </div>
+            <br><br><br>
+            <h5>Geschlossene Tickets</h5>
+            <div class="list-group">
+                {% for ticket in closedtickets %}
+                <a href="/ticket/{{ ticket.id }}" class="list-group-item list-group-item-action fw-light"><b>[{{ ticket.problemtype }}]</b> {{ ticket.title }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+
+{% endif %}
+
+
+
+
+{% endblock body %}
